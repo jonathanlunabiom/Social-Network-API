@@ -1,4 +1,4 @@
-const { Thought, User } = require("../models");
+const { User } = require('../models/index')
 
 module.exports = {
   async getAllUsers(req, res) {
@@ -12,8 +12,6 @@ module.exports = {
   async getUser(req, res) {
     try {
       const user = await User.findOne({ _id: req.params.userId })
-        .populate("friends")
-        .populate("thoughts");
         
       res.status(200).json(user);
     } catch (e) {
