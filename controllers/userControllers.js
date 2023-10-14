@@ -53,4 +53,24 @@ module.exports = {
       res.status(500).json(e.message);
     }
   },
+  async createFriend(req, res) {
+    try {
+      const user = await User.findByIdAndUpdate(req.params.userId, {
+        friends: req.params.friendId,
+      });
+      res.status(200).json(user);
+    } catch (e) {
+      res.status(500).json(e.message);
+    }
+  },
+  async deleteFriend(req, res) {
+    try {
+      const user = await User.findByIdAndDelete(req.params.userId, {
+        friends: req.params.friendId,
+      });
+      res.status(200).json(user);
+    } catch (e) {
+      res.status(500).json(e.message);
+    }
+  },
 };
