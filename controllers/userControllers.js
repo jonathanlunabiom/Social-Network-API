@@ -21,7 +21,7 @@ module.exports = {
   async createUser(req, res) {
     try {
       const user = await User.create(req.body);
-      res.status(200).json(user);
+      res.status(200).json({message:'User created'});
     } catch (e) {
       res.status(500).json(e.message);
     }
@@ -31,7 +31,7 @@ module.exports = {
       const user = await User.findByIdAndUpdate(req.params.userId, req.body); //can only be updated a single property?
 
       if (!user) {
-        res.status(404).json("User not found");
+        return res.status(404).json("User not found");
       }
 
       res.status(200).send({ message: `User updated successfully` });
@@ -44,10 +44,8 @@ module.exports = {
       const user = await User.findOneAndDelete({ _id: req.params.userId });
 
       if (!user) {
-        res.status(404).json("User not found");
+        return res.status(404).json("User not found");
       }
-      //also delete the thought that belongs to this user
-      //deleteMany (?)
       res.status(200).json(user);
     } catch (e) {
       res.status(500).json(e.message);
@@ -56,7 +54,7 @@ module.exports = {
   async createFriend(req, res) {
     try {
       const user = await User.findByIdAndUpdate(req.params.userId, {
-        friends: req.params.friendId,
+        $push:{friends: req.params.friendId},
       });
       res.status(200).json(user);
     } catch (e) {
@@ -65,13 +63,9 @@ module.exports = {
   },
   async deleteFriend(req, res) {
     try {
-      // const user = await User.findByIdAndDelete(req.params.userId, {
-      //   friends: req.params.friendId,
-      // });
-      const user = await User.findByIdAndRemove(req.params.userId,{
-        friends: req.params.friendId
-      })
-      console.log(user)
+      const user = await User.findByIdAndUpdate(req.params.userId,
+        {$pull: {"friends": req.params.friendId}}
+      );
       res.status(200).send({ message: "Friend deleted" });
     } catch (e) {
       res.status(500).json(e.message);

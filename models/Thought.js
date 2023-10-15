@@ -2,7 +2,12 @@ const { Schema, model } = require("mongoose");
 const reactionSchema = require("./Reaction");
 
 const formatDay = (date) => {
-  return date.getMonth();
+  let dateTo = new Date();
+  let month = dateTo.getUTCMonth() + 1; 
+  let day = dateTo.getUTCDate();
+  let year = dateTo.getUTCFullYear();
+
+  return  (`${day}/${month}/${year}`)
 };
 
 const thoughtSchema = new Schema(
